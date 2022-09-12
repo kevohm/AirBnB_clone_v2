@@ -126,8 +126,11 @@ class HBNBCommand(cmd.Cmd):
             return
         new_instance = HBNBCommand.classes[data[0]]()
         for i in range(1, len(data)):
-            arg = data[i].split("=")
-            arg[1] = re.sub(r'(^"|"$)',"",arg[1])
+            try:
+                arg = data[i].split("=")
+                arg[1] = re.sub(r'(^"|"$)',"",arg[1])
+            except IndexError:
+                break;
             try:
                 arg_2 = int(arg[1])
             except ValueError:
