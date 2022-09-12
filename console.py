@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 """ Console Module """
 import cmd
+import re
+import shlex
 import sys
 from models.base_model import BaseModel
 from models.__init__ import storage
@@ -115,7 +117,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        data = args.split(" ")
+        data = shlex.split(args.strip())
         if not args:
             print("** class name missing **")
             return
@@ -125,8 +127,19 @@ class HBNBCommand(cmd.Cmd):
         new_instance = HBNBCommand.classes[data[0]]()
         for i in range(1, len(data)):
             arg = data[i].split("=")
-            if arg:
-                setattr(new_instance, arg[0], arg[1].strip('"'))
+            arg[1] = re.sub(r'(^"|"$)',"",arg[1])
+            try:
+                arg_2 = int(arg[1])
+            except ValueError:
+                try:
+                    arg_2 = float(arg[1])
+                except:
+                    arg_2 = arg[1]
+            if isinstance(arg_2, str):
+                arg_2 = arg_2.replace(" ","_")
+                arg_2 = re.sub(r'"', '\"', arg_2)
+            if arg and arg[1] != "":
+                setattr(new_instance, arg[0], arg_2)
         storage.save()
         print(new_instance.id)
         storage.save()
