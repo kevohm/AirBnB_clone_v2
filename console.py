@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 """ Console Module """
 import cmd
-import re
-import shlex
+from shlex import split
 import sys
 from models.base_model import BaseModel
 from models.__init__ import storage
@@ -117,7 +116,8 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        data = shlex.split(args.strip())
+        data = split(args)
+        print(data)
         if not args:
             print("** class name missing **")
             return
@@ -126,26 +126,19 @@ class HBNBCommand(cmd.Cmd):
             return
         new_instance = HBNBCommand.classes[data[0]]()
         for i in range(1, len(data)):
+            if "=" in data[i]:
+                key, value = tuple(data[i].split("="))
+            if value[0] == '"':
+                value = value.strip('"')
+            value = value.replace("_", " ")
             try:
-                arg = data[i].split("=")
-                arg[1] = re.sub(r'(^"|"$)', "", arg[1])
-            except IndexError:
-                break
-            try:
-                arg_2 = int(arg[1])
-            except ValueError:
-                try:
-                    arg_2 = float(arg[1])
-                except BaseException:
-                    arg_2 = arg[1]
-            if isinstance(arg_2, str):
-                arg_2 = arg_2.replace(" ", "_")
-                arg_2 = re.sub(r'"', '\"', arg_2)
-            if arg and arg[1] != "":
-                setattr(new_instance, arg[0], arg_2)
+                value = eval(value)
+            except BaseException:
+                continue
+            if value != "":
+                setattr(new_instance, key, value)
         storage.save()
         print(new_instance.id)
-        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
