@@ -1,7 +1,8 @@
 #!/usr/bin/python3
-from models.base_model import BaseModel
-from models.base_model import Base
+"""Defines the DBStorage engine."""
 from os import getenv
+from models.base_model import Base
+from models.base_model import BaseModel
 from models.amenity import Amenity
 from models.city import City
 from models.place import Place
@@ -13,10 +14,18 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 
+
 class DBStorage:
-    """ represents a database engine """
+    """Represents a database storage engine.
+
+    Attributes:
+        __engine (sqlalchemy.Engine): The working SQLAlchemy engine.
+        __session (sqlalchemy.Session): The working SQLAlchemy session.
+    """
+
     __engine = None
     __session = None
+
     def __init__(self):
         """Initialize a new DBStorage instance."""
         self.__engine = create_engine("mysql+mysqldb://{}:{}@{}/{}".
@@ -29,7 +38,13 @@ class DBStorage:
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """Query on the database session dependent on the given class""" 
+        """Query on the curret database session all objects of the given class.
+
+        If cls is None, queries all types of objects.
+
+        Return:
+            Dict of queried classes in the format <class name>.<obj id> = obj.
+        """
         if cls is None:
             objs = self.__session.query(State).all()
             objs.extend(self.__session.query(City).all())
