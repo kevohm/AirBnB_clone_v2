@@ -44,5 +44,9 @@ def display_n(n):
 def hello(n):
     return render_template('5-number.html', name=n)
 
+@app.route('/number_odd_or_even/<int:n>')
+def check_odd(n):
+    return render_template('6-number_odd_or_even.html', name=n)
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0")
