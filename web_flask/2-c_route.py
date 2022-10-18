@@ -22,6 +22,7 @@ def display_hbnb():
 @app.route('/c/<text>')
 def show_c_text(text):
     """prints c + text"""
+    text=text.replace("_", " ")
     return f'c {escape(text)}'
 
 if __name__ == "__main__":
