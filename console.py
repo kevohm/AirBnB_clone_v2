@@ -60,7 +60,8 @@ class HBNBCommand(cmd.Cmd):
                     except (SyntaxError, NameError):
                         continue
                 kwargs[key] = value
-
+            if my_list[0] not in self.__classes:
+                raise NameError
             if kwargs == {}:
                 obj = eval(my_list[0])()
             else:
@@ -143,18 +144,30 @@ class HBNBCommand(cmd.Cmd):
         If no class is specified, displays all instantiated objects."""
         if not line:
             o = storage.all()
+            # print("o from storage.all() is {}".format(o))
             print([o[k].__str__() for k in o])
             return
-        try:
+        some_list = []
+        if line:
             args = line.split(" ")
             if args[0] not in self.__classes:
-                raise NameError()
+                print("** class doesn't exist **")
+                return
 
-            o = storage.all(eval(args[0]))
-            print([o[k].__str__() for k in o])
-
-        except NameError:
-            print("** class doesn't exist **")
+            o = storage.all(args[0])
+            """print("o is {} when args[0] which is {} is passed".
+            format(o, args[0]))"""
+            for k, v in o.items():
+                """the_id = v.id
+                key = args[0] + '.' + the_id
+                try:
+                    some_list.append(o[key])
+                except KeyError:
+                    continue"""
+                some_list.append(v)
+            print(some_list)
+        """except NameError:
+            print("** class doesn't exist **")"""
 
     def do_update(self, line):
         """Updates an instanceby adding or updating attribute
@@ -229,15 +242,15 @@ class HBNBCommand(cmd.Cmd):
         new_list.append(args[0])
         try:
             my_dict = eval(
-                args[1][args[1].find('{'):args[1].find('}')+1])
+                args[1][args[1].find('{'):args[1].find('}') + 1])
         except Exception:
             my_dict = None
         if isinstance(my_dict, dict):
-            new_str = args[1][args[1].find('(')+1:args[1].find(')')]
+            new_str = args[1][args[1].find('(') + 1:args[1].find(')')]
             new_list.append(((new_str.split(", "))[0]).strip('"'))
             new_list.append(my_dict)
             return new_list
-        new_str = args[1][args[1].find('(')+1:args[1].find(')')]
+        new_str = args[1][args[1].find('(') + 1:args[1].find(')')]
         new_list.append(" ".join(new_str.split(", ")))
         return " ".join(i for i in new_list)
 
