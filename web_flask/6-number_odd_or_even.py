@@ -40,13 +40,18 @@ def display_n(n):
     """Print n if n is int"""
     return "{} is a number".format(n)
 
+
 @app.route('/number_template/<int:n>')
-def hello(n):
-    return render_template('5-number.html', name=n)
+def display_n_template(n):
+    """Return an html page with value of n"""
+    return render_template('5-number.html', n=n)
+
 
 @app.route('/number_odd_or_even/<int:n>')
-def check_odd(n):
-    return render_template('6-number_odd_or_even.html', name=n)
+def diplay_n_odd_or_even(n):
+    """Return html page with if n is odd or even"""
+    return render_template('6-number_odd_or_even.html', n=n)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")
